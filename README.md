@@ -2,23 +2,25 @@
 #include <IRremote.h>
 
 const int IR_RECEIVE_PIN = 12;  // Define the pin number for the IR Sensor
-String lastDecodedValue = "";   // Variable to store the last decoded value
 
-const int in1 = 5;  // in1,2 for right wheel
-const int in2 = 6;
-const int in3 = 9;  // in3,4 for left wheel
-const int in4 = 10;
+const int A_1B = 5;
+const int A_1A = 6;
+const int B_1B = 9;
+const int B_1A = 10;
+const int buttonPin = 2;
 
-int speed = 250;
+int buttonState = 0; 
+int speed = 150;
 
 void setup() {
   Serial.begin(9600);
 
   //motor
-  pinMode(in1, OUTPUT);
-  pinMode(in2, OUTPUT);
-  pinMode(in3, OUTPUT);
-  pinMode(in4, OUTPUT);
+  pinMode(A_1B, OUTPUT);
+  pinMode(A_1A, OUTPUT);
+  pinMode(B_1B, OUTPUT);
+  pinMode(B_1A, OUTPUT);
+  pinMode(buttonPin, INPUT);
 
   //IR remote
   IrReceiver.begin(IR_RECEIVE_PIN, ENABLE_LED_FEEDBACK);  // Start the IR receiver // Start the receiver
@@ -27,13 +29,16 @@ void setup() {
 }
 
 void loop() {
-//Serial.println('car');
+  buttonState = digitalRead(buttonPin);
+if (buttonState == HIGH) {
+   
+  
   if (IrReceiver.decode()) {
     //    Serial.println(results.value,HEX);
     String key = decodeKeyValue(IrReceiver.decodedIRData.command);
     if (key != "ERROR") {
       Serial.println(key);
-//Serial.println('wheel');
+
       if (key == "+") {
         speed += 50;
       } else if (key == "-") {
@@ -67,71 +72,73 @@ void loop() {
       delay(500);
       stopMove();
     }
+
     IrReceiver.resume();  // Enable receiving of the next value
   }
+}       //added by EB
 }
 
 void moveForward(int speed) {
-  analogWrite(in1, 0);
-  analogWrite(in2, speed);
-  analogWrite(in3, speed);
-  analogWrite(in4, 0);
+  analogWrite(A_1B, 0);
+  analogWrite(A_1A, speed);
+  analogWrite(B_1B, speed);
+  analogWrite(B_1A, 0);
 }
 
 void moveBackward(int speed) {
-  analogWrite(in1, speed);
-  analogWrite(in2, 0);
-  analogWrite(in3, 0);
-  analogWrite(in4, speed);
+  analogWrite(A_1B, speed);
+  analogWrite(A_1A, 0);
+  analogWrite(B_1B, 0);
+  analogWrite(B_1A, speed);
 }
 
 void turnRight(int speed) {
-  analogWrite(in1, speed);
-  analogWrite(in2, 0);
-  analogWrite(in3, speed);
-  analogWrite(in4, 0);
+  analogWrite(A_1B, speed);
+  analogWrite(A_1A, 0);
+  analogWrite(B_1B, speed);
+  analogWrite(B_1A, 0);
 }
 
 void turnLeft(int speed) {
-  analogWrite(in1, 0);
-  analogWrite(in2, speed);
-  analogWrite(in3, 0);
-  analogWrite(in4, speed);
+  analogWrite(A_1B, 0);
+  analogWrite(A_1A, speed);
+  analogWrite(B_1B, 0);
+  analogWrite(B_1A, speed);
 }
 
 void moveLeft(int speed) {
-  analogWrite(in1, 0);
-  analogWrite(in2, speed);
-  analogWrite(in3, 0);
-  analogWrite(in4, 0);
+  analogWrite(A_1B, 0);
+  analogWrite(A_1A, speed);
+  analogWrite(B_1B, 0);
+  analogWrite(B_1A, 0);
 }
 
 void moveRight(int speed) {
-  analogWrite(in1, 0);
-  analogWrite(in2, 0);
-  analogWrite(in3, speed);
-  analogWrite(in4, 0);
+  analogWrite(A_1B, 0);
+  analogWrite(A_1A, 0);
+  analogWrite(B_1B, speed);
+  analogWrite(B_1A, 0);
 }
 
 void backLeft(int speed) {
-  analogWrite(in1, speed);
-  analogWrite(in2, 0);
-  analogWrite(in3, 0);
-  analogWrite(in4, 0);
+  analogWrite(A_1B, speed);
+  analogWrite(A_1A, 0);
+  analogWrite(B_1B, 0);
+  analogWrite(B_1A, 0);
 }
 
 void backRight(int speed) {
-  analogWrite(in1, 0);
-  analogWrite(in2, 0);
-  analogWrite(in3, 0);
-  analogWrite(in4, speed);
+  analogWrite(A_1B, 0);
+  analogWrite(A_1A, 0);
+  analogWrite(B_1B, 0);
+  analogWrite(B_1A, speed);
 }
 
 void stopMove() {
-  analogWrite(in1, 0);
-  analogWrite(in2, 0);
-  analogWrite(in3, 0);
-  analogWrite(in4, 0);
+  analogWrite(A_1B, 0);
+  analogWrite(A_1A, 0);
+  analogWrite(B_1B, 0);
+  analogWrite(B_1A, 0);
 }
 
 
@@ -189,3 +196,5 @@ String decodeKeyValue(long result)
 
 # First Milestone Video
 https://www.youtube.com/watch?v=J-u9MNxvZ0E
+
+
